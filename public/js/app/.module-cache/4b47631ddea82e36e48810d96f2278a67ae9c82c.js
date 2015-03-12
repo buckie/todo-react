@@ -7,7 +7,7 @@ var data = [
 
 var Comment = React.createClass({displayName: "Comment",
   render: function() {
-    var rawMarkup = converter.makeHtml(this.props.commentBody.toString());
+    var rawMarkup = converter.makeHtml(this.props.children.toString());
     return (
       React.createElement("div", {className: "comment"}, 
         React.createElement("h2", {className: "commentAuthor"}, 
@@ -21,16 +21,7 @@ var Comment = React.createClass({displayName: "Comment",
 
 var CommentList = React.createClass({displayName: "CommentList",
   render: function() {
-    var commentNodes = this.props.data.map(function (comment) {
-      return (
-        React.createElement(Comment, {author: comment.author, commentBody: comment.text})
-      );
-    });
-    return (
-      React.createElement("div", {className: "commentList"}, 
-        commentNodes
-      )
-    );
+    
   }
 });
 
@@ -45,25 +36,6 @@ var CommentForm = React.createClass({displayName: "CommentForm",
 });
 
 var CommentBox = React.createClass({displayName: "CommentBox",
-  loadCommentsFromServer: function() {
-    $.ajax({
-      url: this.props.url,
-      dataType: 'json',
-      success: function(data) {
-        this.setState({data: data});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
-  },
-  getInitialState: function() {
-    return {data: []};
-  },
-  componentDidMount: function() {
-    this.loadCommentsFromServer();
-    setInterval(this.loadCommentsFromServer, this.props.pollInterval);
-  },
   render: function() {
     return (
       React.createElement("div", {className: "commentBox"}, 
@@ -76,6 +48,6 @@ var CommentBox = React.createClass({displayName: "CommentBox",
 });
 
 React.render(
-  React.createElement(CommentBox, {url: "comments.json", pollInterval: 2000}),
+  React.createElement(CommentBox, {data: data}),
   document.getElementById('content')
 );

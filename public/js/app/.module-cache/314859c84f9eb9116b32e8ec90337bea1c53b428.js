@@ -5,46 +5,46 @@ var data = [
   {author: "Jordan Walke", text: "This is *another* comment"}
 ];
 
-var Comment = React.createClass({
+var Comment = React.createClass({displayName: "Comment",
   render: function() {
     var rawMarkup = converter.makeHtml(this.props.commentBody.toString());
     return (
-      <div className="comment">
-        <h2 className="commentAuthor">
-          {this.props.author}
-        </h2>
-        <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
-      </div>
+      React.createElement("div", {className: "comment"}, 
+        React.createElement("h2", {className: "commentAuthor"}, 
+          this.props.author
+        ), 
+        React.createElement("span", {dangerouslySetInnerHTML: {__html: rawMarkup}})
+      )
     );
   }
 });
 
-var CommentList = React.createClass({
+var CommentList = React.createClass({displayName: "CommentList",
   render: function() {
     var commentNodes = this.props.data.map(function (comment) {
       return (
-        <Comment author={comment.author} commentBody={comment.text}/>
+        React.createElement(Comment, {author: comment.author, commentBody: comment.text})
       );
     });
     return (
-      <div className="commentList">
-        {commentNodes}
-      </div>
+      React.createElement("div", {className: "commentList"}, 
+        commentNodes
+      )
     );
   }
 });
 
-var CommentForm = React.createClass({
+var CommentForm = React.createClass({displayName: "CommentForm",
   render: function() {
     return (
-      <div className="commentForm">
-        Comment Form
-      </div>
+      React.createElement("div", {className: "commentForm"}, 
+        "Comment Form"
+      )
     );
   }
 });
 
-var CommentBox = React.createClass({
+var CommentBox = React.createClass({displayName: "CommentBox",
   loadCommentsFromServer: function() {
     $.ajax({
       url: this.props.url,
@@ -66,16 +66,16 @@ var CommentBox = React.createClass({
   },
   render: function() {
     return (
-      <div className="commentBox">
-        <h1>Comments</h1>
-        <CommentForm/>
-        <CommentList data={this.props.data}/>
-      </div>
+      React.createElement("div", {className: "commentBox"}, 
+        React.createElement("h1", null, "Comments"), 
+        React.createElement(CommentForm, null), 
+        React.createElement(CommentList, {data: this.props.data})
+      )
     );
   }
 });
 
 React.render(
-  <CommentBox url="comments.json" pollInterval={2000} />,
+  React.createElement(CommentBox, {url: "comments.json"}),
   document.getElementById('content')
 );
