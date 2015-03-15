@@ -19,12 +19,15 @@ def comments_handler():
 
     with open('comments.json', 'r') as file:
         comments = json.loads(file.read())
+        print(str(request.method), "Comment File:", comments)
+
 
     if request.method == 'POST':
         comments.append(request.form.to_dict())
 
         with open('comments.json', 'w') as file:
             file.write(json.dumps(comments, indent=4, separators=(',', ': ')))
+            print(str(request.method), "Comment File:", comments)
 
     return Response(json.dumps(comments), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
 

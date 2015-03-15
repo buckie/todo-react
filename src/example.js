@@ -1,34 +1,19 @@
 var converter = new Showdown.converter();
 
-var data = [
-  {author: "Pete Hunt", text: "This is one comment"},
-  {author: "Jordan Walke", text: "This is *another* comment"}
-];
+//var data = [
+//  {author: "Pete Hunt", text: "This is one comment"},
+//  {author: "Jordan Walke", text: "This is *another* comment"}
+//];
 
 var Comment = React.createClass({
   render: function() {
-    var rawMarkup = converter.makeHtml(this.props.commentBody.toString());
+    var rawMarkup = converter.makeHtml(this.props.children.toString());
     return (
       <div className="comment">
         <h2 className="commentAuthor">
           {this.props.author}
         </h2>
         <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
-      </div>
-    );
-  }
-});
-
-var CommentList = React.createClass({
-  render: function() {
-    var commentNodes = this.props.data.map(function (comment) {
-      return (
-        <Comment author={comment.author} commentBody={comment.text}/>
-      );
-    });
-    return (
-      <div className="commentList">
-        {commentNodes}
       </div>
     );
   }
@@ -68,8 +53,28 @@ var CommentBox = React.createClass({
     return (
       <div className="commentBox">
         <h1>Comments</h1>
+        <CommentList data={this.state.data} />
         <CommentForm/>
-        <CommentList data={this.props.data}/>
+      </div>
+    );
+  }
+});
+
+var CommentList = React.createClass({
+  render: function() {
+    var commentNodes = this.props.data.map(function(comment, index) {
+      return (
+        // `key` is a React-specific concept and is not mandatory for the
+        // purpose of this tutorial. if you're curious, see more here:
+        // http://facebook.github.io/react/docs/multiple-components.html#dynamic-children
+        <Comment author={comment.author} key={index}>
+          {comment.text}
+        </Comment>
+      );
+    });
+    return (
+      <div className="commentList">
+        {commentNodes}
       </div>
     );
   }
